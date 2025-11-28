@@ -379,6 +379,7 @@ public class MineManager extends MineManagerAPI {
     @Override
     public void unloadMines() {
         for (RMine mine : this.getMines().values()) {
+            mine.saveAllOf(List.of(RMine.MineData.COUNTDOWN), true);
             if (mine.getMineTimer() != null) {
                 mine.getMineTimer().kill();
             }

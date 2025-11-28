@@ -59,10 +59,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -164,6 +161,18 @@ public class RealMinesPlugin extends JavaPlugin {
 
         commandManager.registerSuggestion(SuggestionKey.of("#minetasks"),
                 (sender, context) -> realMines.getMineResetTasksManager().getRegisteredTasks()
+        );
+
+        commandManager.registerSuggestion(SuggestionKey.of("#minecountdowns"),
+                (sender, context) -> {
+                    RMine mine = realMines.getMineManager().getMine(context.getArgs().get(0));
+                    if (mine != null && mine.getMineTimer() != null && mine.getMineTimer().getCountdown() != null) {
+                        Integer countdown = mine.getCountdown();
+                        if (countdown == null) return List.of();
+                        return List.of(countdown.toString());
+                    }
+                    return List.of();
+                }
         );
 
         //registo de comandos #portugal
