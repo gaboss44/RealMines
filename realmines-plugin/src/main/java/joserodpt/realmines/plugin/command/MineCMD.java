@@ -180,18 +180,16 @@ public class MineCMD extends BaseCommandWA {
     @Permission("realmines.admin")
     @WrongUsage("&c/mine setcountdown <name> <seconds>")
     public void setcountdowncmd(final CommandSender commandSender, @Suggestion("#mines") final String name, @Suggestion("#minecountdowns") final Integer seconds) {
-        if (commandSender instanceof Player) {
-            final RMine m = rm.getMineManager().getMine(name);
-            if (m != null) {
-                boolean success = m.setCountdown(seconds, true);
-                if (success) {
-                    TranslatableLine.MINE_COUNTDOWN_SET.setV1(TranslatableLine.ReplacableVar.MINE.eq(m.getDisplayName())).setV2(TranslatableLine.ReplacableVar.TIME.eq(String.valueOf(seconds))).send(commandSender);
-                } else {
-                    TranslatableLine.MINE_COUNTDOWN_SET_UNSUCCESSFUL.setV1(TranslatableLine.ReplacableVar.MINE.eq(m.getDisplayName())).send(commandSender);
-                }
+        final RMine m = rm.getMineManager().getMine(name);
+        if (m != null) {
+            boolean success = m.setCountdown(seconds, true);
+            if (success) {
+                TranslatableLine.MINE_COUNTDOWN_SET.setV1(TranslatableLine.ReplacableVar.MINE.eq(m.getDisplayName())).setV2(TranslatableLine.ReplacableVar.TIME.eq(String.valueOf(seconds))).send(commandSender);
             } else {
-                TranslatableLine.SYSTEM_MINE_DOESNT_EXIST.send(commandSender);
+                TranslatableLine.MINE_COUNTDOWN_SET_UNSUCCESSFUL.setV1(TranslatableLine.ReplacableVar.MINE.eq(m.getDisplayName())).send(commandSender);
             }
+        } else {
+            TranslatableLine.SYSTEM_MINE_DOESNT_EXIST.send(commandSender);
         }
     }
 
@@ -199,23 +197,21 @@ public class MineCMD extends BaseCommandWA {
     @Permission("realmines.admin")
     @WrongUsage("&c/mine resetcountdown <name>")
     public void resetcountdowncmd(final CommandSender commandSender, @Suggestion("#mines") final String name) {
-        if (commandSender instanceof Player) {
-            final RMine m = rm.getMineManager().getMine(name);
-            if (m != null) {
-                boolean success = m.resetCountdown(true);
-                if (success) {
-                    TranslatableLine line = TranslatableLine.MINE_COUNTDOWN_SET.setV1(TranslatableLine.ReplacableVar.MINE.eq(m.getDisplayName()));
-                    Integer countdown = m.getCountdown();
-                    if (countdown != null) {
-                        line.setV2(TranslatableLine.ReplacableVar.TIME.eq(String.valueOf(countdown)));
-                    }
-                    line.send(commandSender);
-                } else {
-                    TranslatableLine.MINE_COUNTDOWN_SET_UNSUCCESSFUL.setV1(TranslatableLine.ReplacableVar.MINE.eq(m.getDisplayName())).send(commandSender);
+        final RMine m = rm.getMineManager().getMine(name);
+        if (m != null) {
+            boolean success = m.resetCountdown(true);
+            if (success) {
+                TranslatableLine line = TranslatableLine.MINE_COUNTDOWN_SET.setV1(TranslatableLine.ReplacableVar.MINE.eq(m.getDisplayName()));
+                Integer countdown = m.getCountdown();
+                if (countdown != null) {
+                    line.setV2(TranslatableLine.ReplacableVar.TIME.eq(String.valueOf(countdown)));
                 }
+                line.send(commandSender);
             } else {
-                TranslatableLine.SYSTEM_MINE_DOESNT_EXIST.send(commandSender);
+                TranslatableLine.MINE_COUNTDOWN_SET_UNSUCCESSFUL.setV1(TranslatableLine.ReplacableVar.MINE.eq(m.getDisplayName())).send(commandSender);
             }
+        } else {
+            TranslatableLine.SYSTEM_MINE_DOESNT_EXIST.send(commandSender);
         }
     }
 
