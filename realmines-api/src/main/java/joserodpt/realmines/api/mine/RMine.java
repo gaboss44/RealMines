@@ -61,6 +61,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,7 +107,7 @@ public abstract class RMine {
         }
     }
 
-    public enum MineData {BLOCKS, ICON, RESET, TELEPORT, SIGNS, POS, NAME, DISPLAYNAME, FACES, COLOR, MINE_TYPE, ALL}
+    public enum MineData {BLOCKS, ICON, RESET, COUNTDOWN, TELEPORT, SIGNS, POS, NAME, DISPLAYNAME, FACES, COLOR, MINE_TYPE, ALL}
 
     protected String name, displayName;
 
@@ -225,6 +226,7 @@ public abstract class RMine {
         this.config.set("reset.percentage.value", mineConfigSection.getInt("Settings.Reset.ByPercentageValue"));
         this.config.set("reset.time.active", mineConfigSection.getBoolean("Settings.Reset.ByTime"));
         this.config.set("reset.time.value", mineConfigSection.getInt("Settings.Reset.ByTimeValue"));
+        this.config.set("reset.time.countdown", mineConfigSection.getInt("Settings.Reset.ByTimeCountdown"));
 
         this.config.set(RMineSettings.BREAK_PERMISSION.getConfigKey(), mineConfigSection.getBoolean("Settings.Break-Permission"));
         this.config.set(RMineSettings.DISCARD_BREAK_ACTION_MESSAGES.getConfigKey(), mineConfigSection.getBoolean("Settings.Discard-Break-Action-Messages"));
@@ -514,7 +516,9 @@ public abstract class RMine {
 
         this.timer = new MineTimer(this);
         if (this.resetByTime) {
+            int countdown = this.config.getInt("reset.time.countdown", this.resetByTimeValue);
             this.timer.start();
+            this.setCountdown(countdown);
         }
     }
 
@@ -651,6 +655,32 @@ public abstract class RMine {
 
     public MineTimer getMineTimer() {
         return this.timer;
+    }
+
+    public @Nullable Integer getCountdown() {
+        if (this.timer == null || this.timer.getCountdown() == null) {
+            return null;
+        }
+        return this.timer.getCountdown().getSecondsLeft();
+    }
+
+    public boolean setCountdown(int seconds) {
+        return setCountdown(seconds, true);
+    }
+
+    public boolean setCountdown(int seconds, boolean saveData) {
+        if (this.timer == null || this.timer.getCountdown() == null) {
+            return false;
+        }
+        this.timer.getCountdown().setSecondsLeft(seconds);
+        if (saveData) {
+            this._save(MineData.COUNTDOWN, true);
+        }
+        return true;
+    }
+
+    public boolean resetCountdown(boolean saveData) {
+        return this.setCountdown(this.resetByTimeValue, saveData);
     }
 
     public Location getPOS1() {
@@ -884,6 +914,15 @@ public abstract class RMine {
         }
     }
 
+    public void saveAllOf(final Collection<MineData> types, boolean save) {
+        for (MineData t : types) {
+            this._save(t, false);
+        }
+        if (save) {
+            saveConfig();
+        }
+    }
+
     private void _save(MineData t, boolean save) {
         switch (t) {
             case ICON:
@@ -900,6 +939,8 @@ public abstract class RMine {
                 this.config.set("reset.time.active", isResetBy(Reset.TIME));
                 this.config.set("reset.time.value", getResetValue(Reset.TIME));
                 break;
+            case COUNTDOWN:
+                this.config.set("reset.time.countdown", getCountdown());
             case SIGNS:
                 this.config.set("signs", this.getSignList());
                 break;
@@ -970,6 +1011,7 @@ public abstract class RMine {
                 this._save(MineData.FACES, false);
                 this._save(MineData.COLOR, false);
                 this._save(MineData.MINE_TYPE, false);
+                this._save(MineData.COUNTDOWN, false);
                 break;
         }
         if (save)

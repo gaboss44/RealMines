@@ -119,6 +119,14 @@ public class Countdown implements Runnable {
         return this.secondsLeft;
     }
 
+    /**
+     * Sets the seconds left for this timer
+     * @param secondsLeft Seconds left
+     */
+    public void setSecondsLeft(int secondsLeft) {
+        this.secondsLeft = secondsLeft;
+    }
+
     public Integer getTaskId() {
         return this.assignedTaskId;
     }

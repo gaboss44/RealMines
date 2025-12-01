@@ -24,6 +24,8 @@ public enum TranslatableLine {
     MINE_RESET_WARNING("Mines.Reset.Warning", ReplacableVar.MINE),
     MINE_TELEPORT("Mines.Teleport", ReplacableVar.MINE),
     MINE_TELEPORT_SET("Mines.Teleport-Set", ReplacableVar.MINE),
+    MINE_COUNTDOWN_SET("Mines.Countdown-Set", ReplacableVar.MINE, ReplacableVar.TIME),
+    MINE_COUNTDOWN_SET_UNSUCCESSFUL("Mines.Countdown-Set-Unsuccessful", ReplacableVar.MINE),
     MINE_NO_TELEPORT_LOCATION("Mines.No-Teleport-Location"),
     // break actions
     MINE_BREAK_ACTION_GIVE_MONEY("Mines.Break-Actions.Give-Money", ReplacableVar.MONEY),
