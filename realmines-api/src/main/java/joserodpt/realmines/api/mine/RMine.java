@@ -914,15 +914,6 @@ public abstract class RMine {
         }
     }
 
-    public void saveAllOf(final Collection<MineData> types, boolean save) {
-        for (MineData t : types) {
-            this._save(t, false);
-        }
-        if (save) {
-            saveConfig();
-        }
-    }
-
     private void _save(MineData t, boolean save) {
         switch (t) {
             case ICON:
