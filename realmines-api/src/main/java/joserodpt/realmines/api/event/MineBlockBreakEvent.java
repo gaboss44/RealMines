@@ -17,6 +17,7 @@ import joserodpt.realmines.api.mine.RMine;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -25,16 +26,22 @@ public class MineBlockBreakEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
+    private final Cancellable cancellable;
     private final RMine mine;
     private final boolean broken;
     private final Block b;
     private final Player p;
 
-    public MineBlockBreakEvent(final Player p, final RMine m, final Block b, final boolean broken) {
+    public MineBlockBreakEvent(final Cancellable cancellable, final Player p, final RMine m, final Block b, final boolean broken) {
+        this.cancellable = cancellable;
         this.p = p;
         this.mine = m;
         this.b = b;
         this.broken = broken;
+    }
+
+    public Cancellable getCancellable() {
+        return cancellable;
     }
 
     public Block getBlock() {

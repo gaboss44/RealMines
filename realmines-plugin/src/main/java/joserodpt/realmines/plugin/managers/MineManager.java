@@ -357,8 +357,10 @@ public class MineManager extends MineManagerAPI {
                             if (mi.isBlockMiningDisabled()) {
                                 e.setCancelled(true);
                             } else {
-                                Bukkit.getPluginManager().callEvent(new MineBlockBreakEvent(p, mine, block, broken));
-                                return mine.getMineItems().get(block.getType());
+                                Bukkit.getPluginManager().callEvent(new MineBlockBreakEvent(e, p, mine, block, broken));
+                                if (!e.isCancelled()) {
+                                    return mine.getMineItems().get(block.getType());
+                                }
                             }
                         }
                     }
