@@ -31,7 +31,11 @@ public class MineTimer {
     }
 
     public void start() {
-        this.startTask(this.m.getResetValue(RMine.Reset.TIME));
+        this.start(false);
+    }
+
+    public void start(boolean resetCountdown) {
+        this.startTask(this.count == null || resetCountdown ? this.m.getResetValue(RMine.Reset.TIME) : this.count.getSecondsLeft() );
     }
 
     private void startTask(final int s) {
@@ -60,8 +64,12 @@ public class MineTimer {
     }
 
     public void restart() {
+        this.restart(false);
+    }
+
+    public void restart(boolean resetCountdown) {
         this.kill();
-        this.start();
+        this.start(resetCountdown);
     }
 
     public Countdown getCountdown() {
